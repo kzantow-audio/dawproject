@@ -1,523 +1,308 @@
-use crate::project::xml_schema_types::{
-    Arrangement, AuPlugin, Audio, BoolParameter, BoolPoint, BuiltinDevice, Channel, ClapPlugin,
-    Clip, ClipSlot, Clips, Compressor, Device, DeviceRole, EnumParameter, EnumPoint, Equalizer,
-    FileReference, IntegerParameter, IntegerPoint, Lane, Lanes, Limiter, Marker, Markers,
-    MediaFile, Nameable, NoiseGate, Notes, Parameter, Parameters, Plugin, Point, RealParameter,
-    RealPoint, Referenceable, Scene, Send, TimeSignatureParameter, TimeSignaturePoint, TimeUnit,
-    Timeline, Track, Video, Vst2Plugin, Vst3Plugin, Warps,
+use crate::repositories::project::{
+    ArrangementType, AuPluginType, AudioType, BoolParameterType, BoolPointType,
+    BuiltinDeviceType, ChannelType, ClipType, ClipSlotType, ClipsType, CompressorType,
+    DeviceParametersElementType, DeviceRoleType, DeviceType, EnumParameterType, EnumPointType,
+    EqualizerType, FileReferenceType, IntegerParameterType, LaneType, LanesType, LimiterType,
+    MarkerType, MarkersType, MediaFileType, NameableType, NoiseGateType, NotesType,
+    ParameterType, PluginType, PointType, RealParameterType, RealPointType, ReferenceableType,
+    SceneType, SendType, TimeSignatureParameterType, TimeSignaturePointType, TimeUnitType,
+    TimelineType, TrackType, WarpsType,
 };
 
-macro_rules! impl_base_trait {
-    ($trait_ident:ident, $base_type:ident, $fn_ident:ident, $type:ty, $($base:tt)*) => {
-        impl $trait_ident for $type {
-            fn $fn_ident(&self) -> Option<&$base_type> {
-                Some(&self $($base)*)
-            }
-        }
-    };
-}
+// ---------------------------------------------------------------------------
+// NameableTrait — types with name, color, comment
+// ---------------------------------------------------------------------------
 
 pub trait NameableTrait {
-    fn get_nameable(&self) -> Option<&Nameable>;
-
-    fn get_name(&self) -> Option<&str> {
-        self.get_nameable()
-            .and_then(|nameable| nameable.name.as_deref())
-    }
-
-    fn get_color(&self) -> Option<&str> {
-        self.get_nameable()
-            .and_then(|nameable| nameable.color.as_deref())
-    }
-
-    fn get_comment(&self) -> Option<&str> {
-        self.get_nameable()
-            .and_then(|nameable| nameable.comment.as_deref())
-    }
+    fn get_name(&self) -> Option<&str>;
+    fn get_color(&self) -> Option<&str>;
+    fn get_comment(&self) -> Option<&str>;
 }
-impl_base_trait!(NameableTrait, Nameable, get_nameable, Nameable,);
-impl_base_trait!(NameableTrait, Nameable, get_nameable, Clip, .base);
-impl_base_trait!(NameableTrait, Nameable, get_nameable, Marker, .base);
-//Referenceable
-impl_base_trait!(NameableTrait, Nameable, get_nameable, Referenceable, .base);
-impl_base_trait!(NameableTrait, Nameable, get_nameable, Scene, .base.base);
-impl_base_trait!(NameableTrait, Nameable, get_nameable, Arrangement, .base.base);
-impl_base_trait!(NameableTrait, Nameable, get_nameable, Send, .base.base);
-// Parameter
-impl_base_trait!(NameableTrait, Nameable, get_nameable, Parameter, .base.base);
-impl_base_trait!(NameableTrait, Nameable, get_nameable, RealParameter, .base.base.base);
-impl_base_trait!(NameableTrait, Nameable, get_nameable, IntegerParameter, .base.base.base);
-impl_base_trait!(NameableTrait, Nameable, get_nameable, BoolParameter, .base.base.base);
-impl_base_trait!(NameableTrait, Nameable, get_nameable, EnumParameter, .base.base.base);
-impl_base_trait!(NameableTrait, Nameable, get_nameable, TimeSignatureParameter, .base.base.base);
-// Lane
-impl_base_trait!(NameableTrait, Nameable, get_nameable, Lane, .base.base);
-impl_base_trait!(NameableTrait, Nameable, get_nameable, Track, .base.base.base);
-impl_base_trait!(NameableTrait, Nameable, get_nameable, Channel, .base.base.base);
-// Timeline
-impl_base_trait!(NameableTrait, Nameable, get_nameable, Timeline, .base.base);
-impl_base_trait!(NameableTrait, Nameable, get_nameable, Lanes, .base.base.base);
-impl_base_trait!(NameableTrait, Nameable, get_nameable, Notes, .base.base.base);
-impl_base_trait!(NameableTrait, Nameable, get_nameable, Clips, .base.base.base);
-impl_base_trait!(NameableTrait, Nameable, get_nameable, ClipSlot, .base.base.base);
-impl_base_trait!(NameableTrait, Nameable, get_nameable, Markers, .base.base.base);
-impl_base_trait!(NameableTrait, Nameable, get_nameable, Warps, .base.base.base);
-// MediaFile
-impl_base_trait!(NameableTrait, Nameable, get_nameable, MediaFile, .base.base.base);
-impl_base_trait!(NameableTrait, Nameable, get_nameable, Audio, .base.base.base.base);
-impl_base_trait!(NameableTrait, Nameable, get_nameable, Video, .base.base.base.base);
-// Device
-impl_base_trait!(NameableTrait, Nameable, get_nameable, Device, .base.base);
-// BuiltinDevice
-impl_base_trait!(NameableTrait, Nameable, get_nameable, BuiltinDevice, .base.base.base);
-impl_base_trait!(NameableTrait, Nameable, get_nameable, Equalizer, .base.base.base.base);
-impl_base_trait!(NameableTrait, Nameable, get_nameable, Compressor, .base.base.base.base);
-impl_base_trait!(NameableTrait, Nameable, get_nameable, NoiseGate, .base.base.base.base);
-impl_base_trait!(NameableTrait, Nameable, get_nameable, Limiter, .base.base.base.base);
-// Plugin
-impl_base_trait!(NameableTrait, Nameable, get_nameable, Plugin, .base.base.base);
-impl_base_trait!(NameableTrait, Nameable, get_nameable, Vst2Plugin, .base.base.base.base);
-impl_base_trait!(NameableTrait, Nameable, get_nameable, Vst3Plugin, .base.base.base.base);
-impl_base_trait!(NameableTrait, Nameable, get_nameable, ClapPlugin, .base.base.base.base);
-impl_base_trait!(NameableTrait, Nameable, get_nameable, AuPlugin, .base.base.base.base);
+
+macro_rules! impl_nameable {
+    ($($type:ty),* $(,)?) => { $(
+        impl NameableTrait for $type {
+            fn get_name(&self) -> Option<&str> { self.name.as_deref() }
+            fn get_color(&self) -> Option<&str> { self.color.as_deref() }
+            fn get_comment(&self) -> Option<&str> { self.comment.as_deref() }
+        }
+    )* };
+}
+
+impl_nameable!(
+    NameableType,
+    ClipType,
+    MarkerType,
+    // Referenceable+
+    ReferenceableType,
+    SceneType,
+    ArrangementType,
+    SendType,
+    // Parameter hierarchy
+    ParameterType,
+    RealParameterType,
+    IntegerParameterType,
+    BoolParameterType,
+    EnumParameterType,
+    TimeSignatureParameterType,
+    // Lane hierarchy
+    LaneType,
+    TrackType,
+    ChannelType,
+    // Timeline hierarchy
+    TimelineType,
+    LanesType,
+    NotesType,
+    ClipsType,
+    ClipSlotType,
+    MarkersType,
+    WarpsType,
+    // MediaFile hierarchy
+    MediaFileType,
+    AudioType,
+    // Device hierarchy
+    DeviceType,
+    BuiltinDeviceType,
+    EqualizerType,
+    CompressorType,
+    NoiseGateType,
+    LimiterType,
+    // Plugin hierarchy
+    PluginType,
+    AuPluginType,
+);
+
+// ---------------------------------------------------------------------------
+// ReferenceableTrait — types with id
+// ---------------------------------------------------------------------------
 
 pub trait ReferenceableTrait: NameableTrait {
-    fn get_referenceable(&self) -> Option<&Referenceable>;
-
-    fn get_id(&self) -> Option<&str> {
-        self.get_referenceable()
-            .and_then(|referenceable| referenceable.id.as_deref())
-    }
+    fn get_id(&self) -> Option<&str>;
 }
 
-impl_base_trait!(
-    ReferenceableTrait,
-    Referenceable,
-    get_referenceable,
-    Referenceable,
+macro_rules! impl_referenceable {
+    ($($type:ty),* $(,)?) => { $(
+        impl ReferenceableTrait for $type {
+            fn get_id(&self) -> Option<&str> { self.id.as_deref() }
+        }
+    )* };
+}
+
+impl_referenceable!(
+    ReferenceableType,
+    SceneType,
+    ArrangementType,
+    SendType,
+    // Parameter hierarchy
+    ParameterType,
+    RealParameterType,
+    IntegerParameterType,
+    BoolParameterType,
+    EnumParameterType,
+    TimeSignatureParameterType,
+    // Lane hierarchy
+    LaneType,
+    TrackType,
+    ChannelType,
+    // Timeline hierarchy
+    TimelineType,
+    LanesType,
+    NotesType,
+    ClipsType,
+    ClipSlotType,
+    MarkersType,
+    WarpsType,
+    // MediaFile hierarchy
+    MediaFileType,
+    AudioType,
+    // Device hierarchy
+    DeviceType,
+    BuiltinDeviceType,
+    EqualizerType,
+    CompressorType,
+    NoiseGateType,
+    LimiterType,
+    // Plugin hierarchy
+    PluginType,
+    AuPluginType,
 );
-impl_base_trait!(
-    ReferenceableTrait,
-    Referenceable,
-    get_referenceable,
-    Scene,
-    .base
-);
-impl_base_trait!(
-    ReferenceableTrait,
-    Referenceable,
-    get_referenceable,
-    Arrangement,
-    .base
-);
-impl_base_trait!(
-    ReferenceableTrait,
-    Referenceable,
-    get_referenceable,
-    Send,
-    .base
-);
-// Parameter
-impl_base_trait!(
-    ReferenceableTrait,
-    Referenceable,
-    get_referenceable,
-    Parameter,
-    .base
-);
-impl_base_trait!(
-    ReferenceableTrait,
-    Referenceable,
-    get_referenceable,
-    RealParameter,
-    .base.base
-);
-impl_base_trait!(
-    ReferenceableTrait,
-    Referenceable,
-    get_referenceable,
-    IntegerParameter,
-    .base.base
-);
-impl_base_trait!(
-    ReferenceableTrait,
-    Referenceable,
-    get_referenceable,
-    BoolParameter,
-    .base.base
-);
-impl_base_trait!(
-    ReferenceableTrait,
-    Referenceable,
-    get_referenceable,
-    EnumParameter,
-    .base.base
-);
-impl_base_trait!(
-    ReferenceableTrait,
-    Referenceable,
-    get_referenceable,
-    TimeSignatureParameter,
-    .base.base
-);
-// Lane
-impl_base_trait!(
-    ReferenceableTrait,
-    Referenceable,
-    get_referenceable,
-    Lane,
-    .base
-);
-impl_base_trait!(
-    ReferenceableTrait,
-    Referenceable,
-    get_referenceable,
-    Track,
-    .base.base
-);
-impl_base_trait!(
-    ReferenceableTrait,
-    Referenceable,
-    get_referenceable,
-    Channel,
-    .base.base
-);
-// Timeline
-impl_base_trait!(
-    ReferenceableTrait,
-    Referenceable,
-    get_referenceable,
-    Timeline,
-    .base
-);
-impl_base_trait!(
-    ReferenceableTrait,
-    Referenceable,
-    get_referenceable,
-    Lanes,
-    .base.base
-);
-impl_base_trait!(
-    ReferenceableTrait,
-    Referenceable,
-    get_referenceable,
-    Notes,
-    .base.base
-);
-impl_base_trait!(
-    ReferenceableTrait,
-    Referenceable,
-    get_referenceable,
-    Clips,
-    .base.base
-);
-impl_base_trait!(
-    ReferenceableTrait,
-    Referenceable,
-    get_referenceable,
-    ClipSlot,
-    .base.base
-);
-impl_base_trait!(
-    ReferenceableTrait,
-    Referenceable,
-    get_referenceable,
-    Markers,
-    .base.base
-);
-impl_base_trait!(
-    ReferenceableTrait,
-    Referenceable,
-    get_referenceable,
-    Warps,
-    .base.base
-);
-// MediaFile
-impl_base_trait!(
-    ReferenceableTrait,
-    Referenceable,
-    get_referenceable,
-    MediaFile,
-    .base.base
-);
-impl_base_trait!(
-    ReferenceableTrait,
-    Referenceable,
-    get_referenceable,
-    Audio,
-    .base.base.base
-);
-impl_base_trait!(
-    ReferenceableTrait,
-    Referenceable,
-    get_referenceable,
-    Video,
-    .base.base.base
-);
-// Device
-impl_base_trait!(
-    ReferenceableTrait,
-    Referenceable,
-    get_referenceable,
-    Device,
-    .base
-);
-// BuiltinDevice
-impl_base_trait!(
-    ReferenceableTrait,
-    Referenceable,
-    get_referenceable,
-    BuiltinDevice,
-    .base.base
-);
-impl_base_trait!(
-    ReferenceableTrait,
-    Referenceable,
-    get_referenceable,
-    Equalizer,
-    .base.base.base
-);
-impl_base_trait!(
-    ReferenceableTrait,
-    Referenceable,
-    get_referenceable,
-    Compressor,
-    .base.base.base
-);
-impl_base_trait!(
-    ReferenceableTrait,
-    Referenceable,
-    get_referenceable,
-    NoiseGate,
-    .base.base.base
-);
-impl_base_trait!(
-    ReferenceableTrait,
-    Referenceable,
-    get_referenceable,
-    Limiter,
-    .base.base.base
-);
-// Plugin
-impl_base_trait!(
-    ReferenceableTrait,
-    Referenceable,
-    get_referenceable,
-    Plugin,
-    .base.base
-);
-impl_base_trait!(
-    ReferenceableTrait,
-    Referenceable,
-    get_referenceable,
-    Vst2Plugin,
-    .base.base.base
-);
-impl_base_trait!(
-    ReferenceableTrait,
-    Referenceable,
-    get_referenceable,
-    Vst3Plugin,
-    .base.base.base
-);
-impl_base_trait!(
-    ReferenceableTrait,
-    Referenceable,
-    get_referenceable,
-    ClapPlugin,
-    .base.base.base
-);
-impl_base_trait!(
-    ReferenceableTrait,
-    Referenceable,
-    get_referenceable,
-    AuPlugin,
-    .base.base.base
-);
+
+// ---------------------------------------------------------------------------
+// ParameterTrait — types with parameter_id
+// ---------------------------------------------------------------------------
 
 pub trait ParameterTrait: ReferenceableTrait {
-    fn get_parameter(&self) -> Option<&Parameter>;
-
-    fn get_parameter_id(&self) -> Option<i32> {
-        self.get_parameter()
-            .and_then(|parameter| parameter.parameter_id)
-    }
+    fn get_parameter_id(&self) -> Option<i32>;
 }
 
-impl_base_trait!(ParameterTrait, Parameter, get_parameter, Parameter,);
-impl_base_trait!(ParameterTrait, Parameter, get_parameter, RealParameter, .base);
-impl_base_trait!(ParameterTrait, Parameter, get_parameter, IntegerParameter, .base);
-impl_base_trait!(ParameterTrait, Parameter, get_parameter, BoolParameter, .base);
-impl_base_trait!(ParameterTrait, Parameter, get_parameter, EnumParameter, .base);
-impl_base_trait!(ParameterTrait, Parameter, get_parameter, TimeSignatureParameter, .base);
-
-pub trait LaneTrait: ReferenceableTrait {
-    fn get_lane(&self) -> Option<&Lane>;
+macro_rules! impl_parameter {
+    ($($type:ty),* $(,)?) => { $(
+        impl ParameterTrait for $type {
+            fn get_parameter_id(&self) -> Option<i32> { self.parameter_id }
+        }
+    )* };
 }
 
-impl_base_trait!(LaneTrait, Lane, get_lane, Lane,);
-impl_base_trait!(LaneTrait, Lane, get_lane, Track, .base);
-impl_base_trait!(LaneTrait, Lane, get_lane, Channel, .base);
+impl_parameter!(
+    ParameterType,
+    RealParameterType,
+    IntegerParameterType,
+    BoolParameterType,
+    EnumParameterType,
+    TimeSignatureParameterType,
+);
+
+// ---------------------------------------------------------------------------
+// LaneTrait — Lane, Track, Channel
+// ---------------------------------------------------------------------------
+
+pub trait LaneTrait: ReferenceableTrait {}
+
+impl LaneTrait for LaneType {}
+impl LaneTrait for TrackType {}
+impl LaneTrait for ChannelType {}
+
+// ---------------------------------------------------------------------------
+// TimelineTrait — types with time_unit and track reference
+// ---------------------------------------------------------------------------
 
 pub trait TimelineTrait: ReferenceableTrait {
-    fn get_timeline(&self) -> Option<&Timeline>;
-
-    fn get_time_unit(&self) -> Option<&TimeUnit> {
-        self.get_timeline()
-            .and_then(|timeline| timeline.time_unit.as_ref())
-    }
-
-    fn get_track(&self) -> Option<&str> {
-        self.get_timeline()
-            .and_then(|timeline| timeline.track.as_deref())
-    }
+    fn get_time_unit(&self) -> Option<&TimeUnitType>;
+    fn get_track(&self) -> Option<&str>;
 }
 
-impl_base_trait!(TimelineTrait, Timeline, get_timeline, Timeline,);
-impl_base_trait!(TimelineTrait, Timeline, get_timeline, Lanes, .base);
-impl_base_trait!(TimelineTrait, Timeline, get_timeline, Notes, .base);
-impl_base_trait!(TimelineTrait, Timeline, get_timeline, Clips, .base);
-impl_base_trait!(TimelineTrait, Timeline, get_timeline, ClipSlot, .base);
-impl_base_trait!(TimelineTrait, Timeline, get_timeline, Markers, .base);
-impl_base_trait!(TimelineTrait, Timeline, get_timeline, Warps, .base);
-// MediaFile
-impl_base_trait!(TimelineTrait, Timeline, get_timeline, MediaFile, .base);
-impl_base_trait!(TimelineTrait, Timeline, get_timeline, Audio, .base.base);
-impl_base_trait!(TimelineTrait, Timeline, get_timeline, Video, .base.base);
+macro_rules! impl_timeline {
+    ($($type:ty),* $(,)?) => { $(
+        impl TimelineTrait for $type {
+            fn get_time_unit(&self) -> Option<&TimeUnitType> { self.time_unit.as_ref() }
+            fn get_track(&self) -> Option<&str> { self.track.as_deref() }
+        }
+    )* };
+}
+
+impl_timeline!(
+    TimelineType,
+    LanesType,
+    NotesType,
+    ClipsType,
+    ClipSlotType,
+    MarkersType,
+    WarpsType,
+    MediaFileType,
+    AudioType,
+);
+
+// ---------------------------------------------------------------------------
+// MediaFileTrait — types with file and duration
+// ---------------------------------------------------------------------------
 
 pub trait MediaFileTrait: TimelineTrait {
-    fn get_media_file(&self) -> Option<&MediaFile>;
-
-    fn get_file(&self) -> Option<&FileReference> {
-        self.get_media_file().map(|media_file| &media_file.file)
-    }
-    fn get_duration(&self) -> Option<f64> {
-        self.get_media_file().map(|media_file| media_file.duration)
-    }
+    fn get_file(&self) -> &FileReferenceType;
+    fn get_duration(&self) -> f64;
 }
 
-impl_base_trait!(MediaFileTrait, MediaFile, get_media_file, MediaFile,);
-impl_base_trait!(MediaFileTrait, MediaFile, get_media_file, Audio, .base);
-impl_base_trait!(MediaFileTrait, MediaFile, get_media_file, Video, .base);
+macro_rules! impl_media_file {
+    ($($type:ty),* $(,)?) => { $(
+        impl MediaFileTrait for $type {
+            fn get_file(&self) -> &FileReferenceType { &self.file }
+            fn get_duration(&self) -> f64 { self.duration }
+        }
+    )* };
+}
+
+impl_media_file!(MediaFileType, AudioType);
+
+// ---------------------------------------------------------------------------
+// DeviceTrait — types with device fields
+// ---------------------------------------------------------------------------
 
 pub trait DeviceTrait: ReferenceableTrait {
-    fn get_device(&self) -> Option<&Device>;
-
-    fn get_parameters(&self) -> Option<&Parameters> {
-        self.get_device()
-            .and_then(|device| device.parameters.as_ref())
-    }
-
-    fn get_enabled(&self) -> Option<&BoolParameter> {
-        self.get_device().and_then(|device| device.enabled.as_ref())
-    }
-
-    fn get_state(&self) -> Option<&FileReference> {
-        self.get_device().and_then(|device| device.state.as_ref())
-    }
-
-    fn get_device_id(&self) -> Option<&str> {
-        self.get_device()
-            .and_then(|device| device.device_id.as_deref())
-    }
-
-    fn get_device_name(&self) -> Option<&str> {
-        self.get_device().map(|device| device.device_name.as_str())
-    }
-
-    fn get_device_role(&self) -> Option<&DeviceRole> {
-        self.get_device().map(|device| &device.device_role)
-    }
-
-    fn get_device_vendor(&self) -> Option<&str> {
-        self.get_device()
-            .and_then(|device| device.device_vendor.as_deref())
-    }
-
-    fn get_loaded(&self) -> Option<bool> {
-        self.get_device().and_then(|device| device.loaded)
-    }
+    fn get_parameters(&self) -> Option<&DeviceParametersElementType>;
+    fn get_enabled(&self) -> Option<&BoolParameterType>;
+    fn get_state(&self) -> Option<&FileReferenceType>;
+    fn get_device_id(&self) -> Option<&str>;
+    fn get_device_name(&self) -> &str;
+    fn get_device_role(&self) -> &DeviceRoleType;
+    fn get_device_vendor(&self) -> Option<&str>;
+    fn get_loaded(&self) -> Option<bool>;
 }
 
-impl_base_trait!(DeviceTrait, Device, get_device, Device,);
-// BuiltinDevice
-impl_base_trait!(DeviceTrait, Device, get_device, BuiltinDevice, .base);
-impl_base_trait!(DeviceTrait, Device, get_device, Equalizer, .base.base);
-impl_base_trait!(DeviceTrait, Device, get_device, Compressor, .base.base);
-impl_base_trait!(DeviceTrait, Device, get_device, NoiseGate, .base.base);
-impl_base_trait!(DeviceTrait, Device, get_device, Limiter, .base.base);
-// Plugin
-impl_base_trait!(DeviceTrait, Device, get_device, Plugin, .base);
-impl_base_trait!(DeviceTrait, Device, get_device, Vst2Plugin, .base.base);
-impl_base_trait!(DeviceTrait, Device, get_device, Vst3Plugin, .base.base);
-impl_base_trait!(DeviceTrait, Device, get_device, ClapPlugin, .base.base);
-impl_base_trait!(DeviceTrait, Device, get_device, AuPlugin, .base.base);
+macro_rules! impl_device {
+    ($($type:ty),* $(,)?) => { $(
+        impl DeviceTrait for $type {
+            fn get_parameters(&self) -> Option<&DeviceParametersElementType> { self.parameters.as_ref() }
+            fn get_enabled(&self) -> Option<&BoolParameterType> { self.enabled.as_ref() }
+            fn get_state(&self) -> Option<&FileReferenceType> { self.state.as_ref() }
+            fn get_device_id(&self) -> Option<&str> { self.device_id.as_deref() }
+            fn get_device_name(&self) -> &str { &self.device_name }
+            fn get_device_role(&self) -> &DeviceRoleType { &self.device_role }
+            fn get_device_vendor(&self) -> Option<&str> { self.device_vendor.as_deref() }
+            fn get_loaded(&self) -> Option<bool> { self.loaded }
+        }
+    )* };
+}
+
+impl_device!(
+    DeviceType,
+    BuiltinDeviceType,
+    EqualizerType,
+    CompressorType,
+    NoiseGateType,
+    LimiterType,
+    PluginType,
+    AuPluginType,
+);
+
+// ---------------------------------------------------------------------------
+// PluginTrait — types with plugin_version
+// ---------------------------------------------------------------------------
 
 pub trait PluginTrait: DeviceTrait {
-    fn get_plugin(&self) -> Option<&Plugin>;
-
-    fn get_plugin_version(&self) -> Option<&str> {
-        self.get_plugin()
-            .and_then(|plugin| plugin.plugin_version.as_deref())
-    }
+    fn get_plugin_version(&self) -> Option<&str>;
 }
 
-impl_base_trait!(PluginTrait, Plugin, get_plugin, Plugin,);
-impl_base_trait!(PluginTrait, Plugin, get_plugin, Vst2Plugin, .base);
-impl_base_trait!(PluginTrait, Plugin, get_plugin, Vst3Plugin, .base);
-impl_base_trait!(PluginTrait, Plugin, get_plugin, ClapPlugin, .base);
-impl_base_trait!(PluginTrait, Plugin, get_plugin, AuPlugin, .base);
-
-pub trait BuiltinDeviceTrait: DeviceTrait {
-    fn get_builtin_device(&self) -> Option<&BuiltinDevice>;
+macro_rules! impl_plugin {
+    ($($type:ty),* $(,)?) => { $(
+        impl PluginTrait for $type {
+            fn get_plugin_version(&self) -> Option<&str> { self.plugin_version.as_deref() }
+        }
+    )* };
 }
 
-impl_base_trait!(
-    BuiltinDeviceTrait,
-    BuiltinDevice,
-    get_builtin_device,
-    BuiltinDevice,
-);
-impl_base_trait!(
-    BuiltinDeviceTrait,
-    BuiltinDevice,
-    get_builtin_device,
-    Equalizer,
-    .base
-);
-impl_base_trait!(
-    BuiltinDeviceTrait,
-    BuiltinDevice,
-    get_builtin_device,
-    Compressor,
-    .base
-);
-impl_base_trait!(
-    BuiltinDeviceTrait,
-    BuiltinDevice,
-    get_builtin_device,
-    NoiseGate,
-    .base
-);
-impl_base_trait!(
-    BuiltinDeviceTrait,
-    BuiltinDevice,
-    get_builtin_device,
-    Limiter,
-    .base
-);
+impl_plugin!(PluginType, AuPluginType);
+
+// ---------------------------------------------------------------------------
+// BuiltinDeviceTrait — marker for builtin devices
+// ---------------------------------------------------------------------------
+
+pub trait BuiltinDeviceTrait: DeviceTrait {}
+
+impl BuiltinDeviceTrait for BuiltinDeviceType {}
+impl BuiltinDeviceTrait for EqualizerType {}
+impl BuiltinDeviceTrait for CompressorType {}
+impl BuiltinDeviceTrait for NoiseGateType {}
+impl BuiltinDeviceTrait for LimiterType {}
+
+// ---------------------------------------------------------------------------
+// PointTrait — types with time
+// ---------------------------------------------------------------------------
 
 pub trait PointTrait {
-    fn get_point(&self) -> Option<&Point>;
-
-    fn get_time(&self) -> Option<&str> {
-        self.get_point().map(|point| point.time.as_str())
-    }
+    fn get_time(&self) -> &str;
 }
 
-impl_base_trait!(PointTrait, Point, get_point, Point,);
-impl_base_trait!(PointTrait, Point, get_point, BoolPoint, .base);
-impl_base_trait!(PointTrait, Point, get_point, EnumPoint, .base);
-impl_base_trait!(PointTrait, Point, get_point, RealPoint, .base);
-impl_base_trait!(PointTrait, Point, get_point, IntegerPoint, .base);
-impl_base_trait!(PointTrait, Point, get_point, TimeSignaturePoint, .base);
+macro_rules! impl_point {
+    ($($type:ty),* $(,)?) => { $(
+        impl PointTrait for $type {
+            fn get_time(&self) -> &str { &self.time }
+        }
+    )* };
+}
+
+impl_point!(
+    PointType,
+    BoolPointType,
+    EnumPointType,
+    RealPointType,
+    TimeSignaturePointType,
+);

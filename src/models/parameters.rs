@@ -1,6 +1,6 @@
 use thiserror::Error;
 
-use crate::project::xml_schema_types::{BoolParameter, IntegerParameter, RealParameter};
+use crate::repositories::project::{BoolParameterType, IntegerParameterType, RealParameterType};
 
 #[derive(Error, Debug)]
 pub enum ParameterError {
@@ -12,7 +12,7 @@ pub enum ParameterError {
     ParseFloatError(#[from] std::num::ParseFloatError),
 }
 
-impl IntegerParameter {
+impl IntegerParameterType {
     /// set value of parameter
     /// return true if value is changed
     /// return false if value is not changed
@@ -50,7 +50,7 @@ impl IntegerParameter {
     }
 }
 
-impl RealParameter {
+impl RealParameterType {
     pub fn get_max(&self) -> Result<Option<f64>, ParameterError> {
         self.max
             .as_ref()
@@ -128,7 +128,7 @@ impl RealParameter {
     }
 }
 
-impl BoolParameter {
+impl BoolParameterType {
     pub fn unchecked_value(&self) -> bool {
         self.value.unwrap()
     }

@@ -1,7 +1,12 @@
-use hifa_xml_schema_derive::XmlSchema;
-// use yaserde::{YaDeserialize, YaSerialize};
+#[allow(
+    dead_code,
+    unused_imports,
+    clippy::redundant_field_names,
+    clippy::single_match
+)]
+#[rustfmt::skip]
+mod generated {
+    include!("../generated/project_generated.rs");
+}
 
-#[allow(dead_code)]
-#[derive(Debug, XmlSchema)]
-#[xml_schema(source = "assets/FixedProject.xsd")]
-struct ProjectSchema;
+pub use generated::*;

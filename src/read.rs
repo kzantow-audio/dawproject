@@ -2,7 +2,6 @@ use crate::utils::consts::{
     METADATA_PATH, PROJECT_CONTENT_TYPE, PROJECT_FIXED_CONTENT_TYPE, PROJECT_PATH,
 };
 use crate::{Dawproject, DawprojectWithZip, MetaData, Project};
-use hifa_yaserde::de;
 use std::fs::File;
 use std::io::{BufReader, Read, Seek};
 use std::path::Path;
@@ -58,9 +57,11 @@ where
     // TODO: check if the file exists.
     // TODO: check if file is already read.
     fn read_metadata(&mut self) -> Result<(), DawprojectReadError> {
-        let metadata_xml = self.zip.by_name(METADATA_PATH)?;
-        let metadata: MetaData =
-            de::from_reader(metadata_xml).map_err(DawprojectReadError::MetadataDeserializeError)?;
+        let mut metadata_xml = self.zip.by_name(METADATA_PATH)?;
+        let mut metadata_str = String::new();
+        metadata_xml.read_to_string(&mut metadata_str)?;
+        let metadata: MetaData = quick_xml::de::from_str(&metadata_str)
+            .map_err(|e| DawprojectReadError::MetadataDeserializeError(e.to_string()))?;
         self.metadata = Some(metadata);
         Ok(())
     }
@@ -72,8 +73,8 @@ where
         let fixed_project_xml =
             project_xml_string.replace(PROJECT_CONTENT_TYPE, PROJECT_FIXED_CONTENT_TYPE);
 
-        let project: Project = de::from_str(&fixed_project_xml)
-            .map_err(DawprojectReadError::ProjectDeserializeError)?;
+        let project: Project = quick_xml::de::from_str(&fixed_project_xml)
+            .map_err(|e| DawprojectReadError::ProjectDeserializeError(e.to_string()))?;
         self.project = Some(project);
         Ok(())
     }
@@ -110,7 +111,7 @@ where
         None
     }
 
-    pub fn by_name(&mut self, name: &str) -> Result<zip::read::ZipFile<R>, DawprojectReadError> {
+    pub fn by_name(&mut self, name: &str) -> Result<zip::read::ZipFile<'_, R>, DawprojectReadError> {
         self.zip
             .by_name(name)
             .map_err(DawprojectReadError::ZipError)

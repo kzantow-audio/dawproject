@@ -2,6 +2,8 @@ use dawproject::{DawprojectReader, DawprojectWriter};
 use std::{fs::File, io::Read};
 use zip::ZipArchive;
 
+#[allow(dead_code)]
+
 const CANON_DAWPROJECT_PATH: &str = "assets/tests/canon.dawproject";
 const COPIED_CANON_DAWPROJECT_PATH: &str = "assets/tests/copied_canon.dawproject";
 
@@ -57,10 +59,6 @@ fn io_canon_dawproject_xml() {
     reader.read_dawproject().unwrap();
     let dawproject = reader.build_dawproject().unwrap();
 
-    let mut config = hifa_yaserde::ser::Config::default();
-
-    config.perform_indent = true;
-
-    let _project_xml =
-        hifa_yaserde::ser::to_string_with_config(&dawproject.project, &config).unwrap();
+    let project_xml = quick_xml::se::to_string(&dawproject.project).unwrap();
+    assert!(!project_xml.is_empty());
 }

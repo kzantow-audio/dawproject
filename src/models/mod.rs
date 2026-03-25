@@ -6,7 +6,7 @@ use zip::ZipArchive;
 use crate::{MetaData, Project};
 
 /// Dawproject structure
-#[derive(Clone, Debug, Default, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Dawproject {
     pub metadata: MetaData,
     pub project: Project,

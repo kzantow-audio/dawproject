@@ -1,6 +1,12 @@
-use hifa_xml_schema_derive::XmlSchema;
+#[allow(
+    dead_code,
+    unused_imports,
+    clippy::redundant_field_names,
+    clippy::single_match
+)]
+#[rustfmt::skip]
+mod generated {
+    include!("../generated/metadata_generated.rs");
+}
 
-#[allow(dead_code)]
-#[derive(Debug, XmlSchema)]
-#[xml_schema(source = "assets/FixedMetaData.xsd")]
-struct MetadataSchema;
+pub use generated::MetaDataType as MetaData;

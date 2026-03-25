@@ -7,8 +7,8 @@ fn read_canon_dawproject() {
     reader.read_dawproject().unwrap();
     let dawproject = reader.build_dawproject().unwrap();
 
-    assert_eq!(dawproject.metadata.content.title, Some("Canon".into()));
-    assert_eq!(dawproject.project.content.version, "1.0");
+    assert_eq!(dawproject.metadata.title, Some("Canon".into()));
+    assert_eq!(dawproject.project.version, "1.0");
     assert_eq!(
         reader.file_names().collect::<Vec<&str>>(),
         [

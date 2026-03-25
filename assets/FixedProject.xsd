@@ -410,7 +410,7 @@
       <xs:element name="Q" type="realParameter" minOccurs="0"/>
       <xs:element name="Enabled" type="boolParameter" minOccurs="0"/>
     </xs:sequence>
-    <xs:attribute name="type" type="eqBandType" use="required"/>
+    <xs:attribute name="type" type="eqBandKind" use="required"/>
     <xs:attribute name="order" type="xs:int"/>
   </xs:complexType>
 
@@ -474,7 +474,7 @@
           <xs:element name="Volume" type="realParameter"/>
         </xs:sequence>
         <xs:attribute name="destination" type="xs:IDREF"/>
-        <xs:attribute name="type" type="sendType"/>
+        <xs:attribute name="type" type="sendKind"/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -775,7 +775,7 @@
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:simpleType name="eqBandType">
+  <xs:simpleType name="eqBandKind">
     <xs:restriction base="xs:string">
       <xs:enumeration value="highPass"/>
       <xs:enumeration value="lowPass"/>
@@ -797,7 +797,7 @@
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:simpleType name="sendType">
+  <xs:simpleType name="sendKind">
     <xs:restriction base="xs:string">
       <xs:enumeration value="pre"/>
       <xs:enumeration value="post"/>

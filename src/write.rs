@@ -2,7 +2,6 @@ use crate::utils::consts::{
     METADATA_PATH, PROJECT_CONTENT_TYPE, PROJECT_FIXED_CONTENT_TYPE, PROJECT_PATH,
 };
 use crate::{Dawproject, MetaData, Project};
-use hifa_yaserde::ser;
 use std::fs::File;
 use std::io::{BufWriter, Read, Seek, Write};
 use std::path::Path;
@@ -51,25 +50,16 @@ where
         self.zip_writer
             .start_file(METADATA_PATH, options)
             .map_err(DawprojectWriteError::ZipError)?;
-        let xml_str = ser::to_string_with_config(
-            metadata,
-            &ser::Config {
-                perform_indent: true,
-                write_document_declaration: true,
-                indent_string: Some("    ".into()),
-            },
-        )
-        .map_err(DawprojectWriteError::MetadataSerializeError)?;
+
+        let mut xml_str =
+            String::from("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+        let body = quick_xml::se::to_string(metadata)
+            .map_err(|e| DawprojectWriteError::MetadataSerializeError(e.to_string()))?;
+        xml_str.push_str(&body);
+
         self.zip_writer
             .write_all(xml_str.as_bytes())
             .map_err(DawprojectWriteError::StdIoError)?;
-        // TODO: refactor to this
-        // ser::serialize_with_writer(
-        //     metadata,
-        //     self.zip_writer,
-        //     &ser::Config::default(),
-        // )
-        // .map_err(DawprojectWriteError::MetadataSerializeError)?;
         Ok(())
     }
     fn write_project(&mut self, project: &Project) -> Result<(), DawprojectWriteError> {
@@ -77,21 +67,16 @@ where
         self.zip_writer
             .start_file(PROJECT_PATH, options)
             .map_err(DawprojectWriteError::ZipError)?;
-        let fixed_project_xml = ser::to_string_with_config(project, &ser::Config::default())
-            .map_err(DawprojectWriteError::ProjectSerializeError)?;
+
+        let xml_buf = quick_xml::se::to_string(project)
+            .map_err(|e| DawprojectWriteError::ProjectSerializeError(e.to_string()))?;
         // Change into original project.xml
         let original_project_xml =
-            fixed_project_xml.replace(PROJECT_FIXED_CONTENT_TYPE, PROJECT_CONTENT_TYPE);
+            xml_buf.replace(PROJECT_FIXED_CONTENT_TYPE, PROJECT_CONTENT_TYPE);
 
         self.zip_writer
             .write_all(original_project_xml.as_bytes())
             .map_err(DawprojectWriteError::StdIoError)?;
-        // ser::serialize_with_writer(
-        //     project,
-        //     self.zip_writer,
-        //     &ser::Config::default(),
-        // )
-        // .map_err(DawprojectWriteError::MetadataSerializeError)?;
         Ok(())
     }
 
