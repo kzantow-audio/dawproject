@@ -2,8 +2,6 @@ use dawproject::{DawprojectReader, DawprojectWriter};
 use std::{fs::File, io::Read};
 use zip::ZipArchive;
 
-#[allow(dead_code)]
-
 const CANON_DAWPROJECT_PATH: &str = "assets/tests/canon.dawproject";
 const COPIED_CANON_DAWPROJECT_PATH: &str = "assets/tests/copied_canon.dawproject";
 

@@ -1,5 +1,5 @@
 use crate::utils::consts::{
-    METADATA_PATH, PROJECT_CONTENT_TYPE, PROJECT_FIXED_CONTENT_TYPE, PROJECT_PATH,
+    METADATA_PATH, PROJECT_CONTENT_TYPE, PROJECT_FIXED_CONTENT_TYPE, PROJECT_PATH, XML_DECLARATION,
 };
 use crate::{Dawproject, MetaData, Project};
 use std::fs::File;
@@ -23,7 +23,6 @@ pub enum DawprojectWriteError {
 /// Write `.dawproject` file.
 pub struct DawprojectWriter<W: Write + Seek> {
     zip_writer: zip::ZipWriter<W>,
-    // audio_files: Vec<AudioFile>,
 }
 
 impl<W> DawprojectWriter<W>
@@ -51,8 +50,7 @@ where
             .start_file(METADATA_PATH, options)
             .map_err(DawprojectWriteError::ZipError)?;
 
-        let mut xml_str =
-            String::from("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+        let mut xml_str = String::from(XML_DECLARATION);
         let body = quick_xml::se::to_string(metadata)
             .map_err(|e| DawprojectWriteError::MetadataSerializeError(e.to_string()))?;
         xml_str.push_str(&body);
@@ -93,7 +91,7 @@ where
         Ok(())
     }
 
-    pub fn write_file<R: Read>(
+    pub fn write_file(
         &mut self,
         name: &str,
         buf: &[u8],

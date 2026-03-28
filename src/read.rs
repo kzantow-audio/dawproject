@@ -93,14 +93,10 @@ where
     /// Build a `Dawproject` structure.
     /// If metadata and project are not read, return `None`.
     pub fn build_dawproject(&mut self) -> Option<Dawproject> {
-        if self.metadata.is_some() && self.project.is_some() {
-            Some(Dawproject::new(
-                self.metadata.take().unwrap(),
-                self.project.take().unwrap(),
-            ))
-        } else {
-            None
-        }
+        Some(Dawproject::new(
+            self.metadata.take()?,
+            self.project.take()?,
+        ))
     }
 
     pub fn build_dawproject_with_zip(mut self) -> Option<DawprojectWithZip<R>> {
