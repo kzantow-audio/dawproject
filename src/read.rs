@@ -93,10 +93,7 @@ where
     /// Build a `Dawproject` structure.
     /// If metadata and project are not read, return `None`.
     pub fn build_dawproject(&mut self) -> Option<Dawproject> {
-        Some(Dawproject::new(
-            self.metadata.take()?,
-            self.project.take()?,
-        ))
+        Some(Dawproject::new(self.metadata.take()?, self.project.take()?))
     }
 
     pub fn build_dawproject_with_zip(mut self) -> Option<DawprojectWithZip<R>> {
@@ -107,7 +104,10 @@ where
         None
     }
 
-    pub fn by_name(&mut self, name: &str) -> Result<zip::read::ZipFile<'_, R>, DawprojectReadError> {
+    pub fn by_name(
+        &mut self,
+        name: &str,
+    ) -> Result<zip::read::ZipFile<'_, R>, DawprojectReadError> {
         self.zip
             .by_name(name)
             .map_err(DawprojectReadError::ZipError)

@@ -119,13 +119,9 @@ fn add_skip_serializing_if(code: &str) -> String {
         let field_slice = &after_target[..boundary];
 
         if field_slice.contains(":: core :: option :: Option") {
-            result.push_str(
-                "# [serde (default , skip_serializing_if = \"Option::is_none\" , ",
-            );
+            result.push_str("# [serde (default , skip_serializing_if = \"Option::is_none\" , ");
         } else if field_slice.contains(":: std :: vec :: Vec") {
-            result.push_str(
-                "# [serde (default , skip_serializing_if = \"Vec::is_empty\" , ",
-            );
+            result.push_str("# [serde (default , skip_serializing_if = \"Vec::is_empty\" , ");
         } else {
             result.push_str(target);
         }

@@ -3,6 +3,7 @@ use thiserror::Error;
 use crate::repositories::project::{BoolParameterType, IntegerParameterType, RealParameterType};
 
 #[derive(Error, Debug)]
+#[allow(clippy::enum_variant_names)]
 pub enum ParameterError {
     #[error("Value {0} is greater than max {1}")]
     SetMaxError(String, String),
@@ -54,20 +55,14 @@ impl RealParameterType {
     pub fn get_max(&self) -> Result<Option<f64>, ParameterError> {
         self.max
             .as_ref()
-            .map(|max| {
-                max.parse::<f64>()
-                    .map_err(|err| ParameterError::ParseFloatError(err))
-            })
+            .map(|max| max.parse::<f64>().map_err(ParameterError::ParseFloatError))
             .transpose()
     }
 
     pub fn get_min(&self) -> Result<Option<f64>, ParameterError> {
         self.min
             .as_ref()
-            .map(|min| {
-                min.parse::<f64>()
-                    .map_err(|err| ParameterError::ParseFloatError(err))
-            })
+            .map(|min| min.parse::<f64>().map_err(ParameterError::ParseFloatError))
             .transpose()
     }
 
@@ -77,7 +72,7 @@ impl RealParameterType {
             .map(|value| {
                 value
                     .parse::<f64>()
-                    .map_err(|err| ParameterError::ParseFloatError(err))
+                    .map_err(ParameterError::ParseFloatError)
             })
             .transpose()
     }

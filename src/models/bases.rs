@@ -1,12 +1,12 @@
 use crate::repositories::project::{
-    ArrangementType, AuPluginType, AudioType, BoolParameterType, BoolPointType,
-    BuiltinDeviceType, ChannelType, ClipType, ClipSlotType, ClipsType, CompressorType,
-    DeviceParametersElementType, DeviceRoleType, DeviceType, EnumParameterType, EnumPointType,
-    EqualizerType, FileReferenceType, IntegerParameterType, LaneType, LanesType, LimiterType,
-    MarkerType, MarkersType, MediaFileType, NameableType, NoiseGateType, NotesType,
-    ParameterType, PluginType, PointType, RealParameterType, RealPointType, ReferenceableType,
-    SceneType, SendType, TimeSignatureParameterType, TimeSignaturePointType, TimeUnitType,
-    TimelineType, TrackType, WarpsType,
+    ArrangementType, AuPluginType, AudioType, BoolParameterType, BoolPointType, BuiltinDeviceType,
+    ChannelType, ClipSlotType, ClipType, ClipsType, CompressorType, DeviceParametersElementType,
+    DeviceRoleType, DeviceType, EnumParameterType, EnumPointType, EqualizerType, FileReferenceType,
+    IntegerParameterType, LaneType, LanesType, LimiterType, MarkerType, MarkersType, MediaFileType,
+    NameableType, NoiseGateType, NotesType, ParameterType, PluginType, PointType,
+    RealParameterType, RealPointType, ReferenceableType, SceneType, SendType,
+    TimeSignatureParameterType, TimeSignaturePointType, TimeUnitType, TimelineType, TrackType,
+    WarpsType,
 };
 
 // ---------------------------------------------------------------------------
