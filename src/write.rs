@@ -91,11 +91,7 @@ where
         Ok(())
     }
 
-    pub fn write_file(
-        &mut self,
-        name: &str,
-        buf: &[u8],
-    ) -> Result<(), DawprojectWriteError> {
+    pub fn write_file(&mut self, name: &str, buf: &[u8]) -> Result<(), DawprojectWriteError> {
         let options = SimpleFileOptions::default();
         self.zip_writer
             .start_file(name, options)

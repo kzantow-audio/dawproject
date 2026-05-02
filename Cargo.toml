@@ -1,6 +1,6 @@
 [package]
 name = "dawproject"
-version = "0.10.0"
+version = "0.10.1"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/bkbkb-net/dawproject.git"
 documentation = "https://docs.rs/dawproject/"
@@ -10,10 +10,10 @@ edition = "2021"
 
 [dependencies]
 thiserror = "2.0.18"
-serde = { version = "1", features = ["derive"] }
-quick-xml = { version = "0.38", features = ["serialize"] }
-num = "0.4"
-zip = { version = "8.4", features = ["deflate"], default-features = false }
+serde = { version = "1.0.228", features = ["derive"] }
+quick-xml = { version = "0.39.2", features = ["serialize"] }
+num = "0.4.3"
+zip = { version = "8.6.0", features = ["deflate"], default-features = false }
 
 [build-dependencies]
-xsd-parser = "1.5"
+xsd-parser = "1.5.2"
